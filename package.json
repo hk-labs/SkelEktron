@@ -30,8 +30,7 @@
     "build:win": "npm run prebuild && build --win --x64 && npm run postbuild",
     "build:linux": "npm run prebuild && build --linux deb AppImage --x64 && npm run postbuild",
     "build": "build",
-    "postbuild": "node build/target.js --clean",
-    "postinstall": "install-app-deps"
+    "postbuild": "node build/target.js --clean"
   },
   "standard": {
     "globals": [
