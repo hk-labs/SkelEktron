@@ -1,15 +1,15 @@
-'use strict'
+'use strict';
 
-const isDev = (require('electron-is-dev') || global.appSettings.debug)
-const { app, BrowserWindow } = require('electron')
-const ipc = require('electron').ipcMain
+const isDev = require('electron-is-dev') || global.appSettings.debug;
+const { app, BrowserWindow } = require('electron');
+const ipc = require('electron').ipcMain;
 
-function sendAction (action) {
-  const win = BrowserWindow.getFocusedWindow()
+function sendAction(action) {
+  const win = BrowserWindow.getFocusedWindow();
   if (process.platform === 'darwin') {
-    win.restore()
+    win.restore();
   }
-  win.webContents.send(action)
+  win.webContents.send(action);
 }
 
 const editSubmenu = [
@@ -34,25 +34,25 @@ const editSubmenu = [
   {
     role: 'selectall'
   }
-]
+];
 
 // Need to be edited with Dev Tools items
-var viewSubmenu = [
+const viewSubmenu = [
   {
     label: 'Back',
     accelerator: 'CmdOrCtrl+B',
-    click: function (item, focusedWindow) {
+    click: function(item, focusedWindow) {
       if (focusedWindow) {
-        focusedWindow.webContents.goBack()
+        focusedWindow.webContents.goBack();
       }
     }
   },
   {
     label: 'Reload',
     accelerator: 'CmdOrCtrl+R',
-    click: function (item, focusedWindow) {
+    click: function(item, focusedWindow) {
       if (focusedWindow) {
-        focusedWindow.reload()
+        focusedWindow.reload();
       }
     }
   },
@@ -67,8 +67,8 @@ var viewSubmenu = [
     id: 'zoom-in',
     accelerator: 'CmdOrCtrl+Plus',
     enabled: false,
-    click () {
-      sendAction('zoom-in')
+    click() {
+      sendAction('zoom-in');
     }
   },
   {
@@ -76,8 +76,8 @@ var viewSubmenu = [
     id: 'zoom-out',
     accelerator: 'CmdOrCtrl+-',
     enabled: false,
-    click () {
-      sendAction('zoom-out')
+    click() {
+      sendAction('zoom-out');
     }
   },
   {
@@ -85,20 +85,20 @@ var viewSubmenu = [
     id: 'zoom-actual',
     accelerator: 'CmdOrCtrl+0',
     enabled: false,
-    click () {
-      sendAction('zoom-actual')
+    click() {
+      sendAction('zoom-actual');
     }
   }
-]
+];
 
 const helpSubmenu = [
   {
     label: 'Info',
     click: () => {
-      ipc.emit('open-info-window')
+      ipc.emit('open-info-window');
     }
   }
-]
+];
 
 const darwinTemplate = [
   {
@@ -166,7 +166,7 @@ const darwinTemplate = [
     role: 'help',
     submenu: helpSubmenu
   }
-]
+];
 
 const otherTemplate = [
   {
@@ -191,24 +191,24 @@ const otherTemplate = [
     role: 'help',
     submenu: helpSubmenu
   }
-]
+];
 
 // Show Dev Tools menu if running in development
 if (isDev) {
   viewSubmenu.push({
     type: 'separator'
-  })
-  viewSubmenu.push(
-    {
-      label: 'Toggle Developer Tools',
-      accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-      click: function (item, focusedWindow) {
-        if (focusedWindow) {
-          focusedWindow.webContents.toggleDevTools()
-        }
+  });
+  viewSubmenu.push({
+    label: 'Toggle Developer Tools',
+    accelerator: process.platform === 'darwin'
+      ? 'Alt+Command+I'
+      : 'Ctrl+Shift+I',
+    click: (item, focusedWindow) => {
+      if (focusedWindow) {
+        focusedWindow.webContents.toggleDevTools();
       }
     }
-  )
+  });
 }
 
-module.exports = process.platform === 'darwin' ? darwinTemplate : otherTemplate
+module.exports = process.platform === 'darwin' ? darwinTemplate : otherTemplate;

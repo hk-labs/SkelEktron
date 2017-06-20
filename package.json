@@ -15,8 +15,8 @@
     "integration": "mocha test/integration --recursive",
     "coverage": "istanbul cover node_modules/.bin/_mocha -- --recursive",
     "depcheck": "dependency-check app --entry main.js --unused --no-dev",
-    "prettier:check": "prettier --single-quote --debug-check '**/*.js'",
-    "prettier:fix": "prettier --single-quote --write '**/*.js'",
+    "prettier:check": "prettier --single-quote --print-width 100 --debug-check '**/*.js'",
+    "prettier:fix": "prettier --single-quote --print-width 100 --write '**/*.js'",
     "start": "electron ./app/main",
     "clean:linux": "rimraf dist/linux* dist/*.deb dist/*.AppImage",
     "clean:osx": "rimraf dist/mac",
@@ -34,7 +34,6 @@
     "postbuild": "node build/target.js --clean"
   },
   "pre-commit": [
-    "lint",
     "unit"
   ],
   "build": {

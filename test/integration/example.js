@@ -1,53 +1,64 @@
-'use strict'
+'use strict';
 
-const Application = require('spectron').Application
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-const path = require('path')
+const Application = require('spectron').Application;
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const path = require('path');
 
-chai.should()
-chai.use(chaiAsPromised)
+chai.should();
+chai.use(chaiAsPromised);
 
-describe('(integration) skelektron', function () {
-  this.timeout(30000)
+describe('(integration) skelektron', function() {
+  this.timeout(30000);
 
-  let app
+  let app;
 
-  const setupApp = function (app) {
-    chaiAsPromised.transferPromiseness = app.transferPromiseness
-    return app.client.waitUntilWindowLoaded()
-  }
+  const setupApp = function(app) {
+    chaiAsPromised.transferPromiseness = app.transferPromiseness;
+    return app.client.waitUntilWindowLoaded();
+  };
 
-  const startApp = function () {
+  const startApp = function() {
     app = new Application({
-      path: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
-      args: [
-        path.join(__dirname, '..', '..', 'app')
-      ],
+      path: path.join(
+        __dirname,
+        '..',
+        '..',
+        'node_modules',
+        '.bin',
+        'electron'
+      ),
+      args: [path.join(__dirname, '..', '..', 'app')],
       waitTimeout: 10000
-    })
+    });
 
-    return app.start().then(setupApp)
-  }
+    return app.start().then(setupApp);
+  };
 
-  before(function () {
-    return startApp()
-  })
+  before(function() {
+    return startApp();
+  });
 
-  after(function () {
+  after(function() {
     if (app && app.isRunning()) {
-      return app.stop()
+      return app.stop();
     }
-  })
+  });
 
-  it('opens a window displaying the main screen', function () {
-    return app.client.getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .isVisible('.main').should.eventually.be.true
-  })
-})
+  it('opens a window displaying the main screen', function() {
+    return app.client
+      .getWindowCount()
+      .should.eventually.equal(1)
+      .browserWindow.isMinimized()
+      .should.eventually.be.false.browserWindow.isDevToolsOpened()
+      .should.eventually.be.false.browserWindow.isVisible()
+      .should.eventually.be.true.browserWindow.isFocused()
+      .should.eventually.be.true.browserWindow.getBounds()
+      .should.eventually.have.property('width')
+      .and.be.above(0)
+      .browserWindow.getBounds()
+      .should.eventually.have.property('height')
+      .and.be.above(0)
+      .isVisible('.main').should.eventually.be.true;
+  });
+});
