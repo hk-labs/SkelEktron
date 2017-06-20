@@ -1,5 +1,8 @@
-# SkelEktron
+# HKLabs / Electron Boilerplate
 
+This project is a fork of [SkelEktron](https://github.com/BZCoding/SkelEktron) customized for our needs.
+
+# SkelEktron (the original)
 An unofficial [Electron](http://electron.atom.io) Application template.
 
 SkelEktron was born to be a scratchpad application. A kitchen sink forked from the [Quick Start][electron-quick-start] app, where I could test code and ideas for another existing Electron project without messing the original source code. It eventually took its own road as a template application, a blueprint that provides common features and lets you concentrate on your application's specific code.
@@ -186,32 +189,32 @@ First checkout a copy of [Electron Release Server][ers] and configure it to use 
  1. Setup an S3 bucket where
     - everyone can read (EveryOne: list)
     - a custom `yourAppUser`, with specific credentials can write
-    ~~~ json
+~~~ json
+{
+  "Version": "2012-10-17",
+  "Statement": [
     {
-    	"Version": "2012-10-17",
-    	"Statement": [
-    		{
-    			"Sid": "",
-    			"Effect": "Allow",
-    			"Principal": {
-    				"AWS": "arn:aws:iam::XXXXXXXXXXXX:user/your_user"
-    			},
-    			"Action": "s3:*",
-    			"Resource": [
-    				"arn:aws:s3:::your-bucket",
-    				"arn:aws:s3:::your-bucket/*"
-    			]
-    		},
-    		{
-    			"Sid": "PublicReadGetObject",
-    			"Effect": "Allow",
-    			"Principal": "*",
-    			"Action": "s3:GetObject",
-    			"Resource": "arn:aws:s3:::your-bucket/*"
-    		}
-    	]
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXXXXXXXXXXX:user/your_user"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::your-bucket",
+        "arn:aws:s3:::your-bucket/*"
+      ]
+    },
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::your-bucket/*"
     }
-    ~~~
+  ]
+}
+~~~
 
  2. Create an Heroku app (i.e. `your-electron.herokuapp.com`) using Heroku web UI or CLI tool
 
