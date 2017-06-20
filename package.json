@@ -10,12 +10,13 @@
   },
   "main": "app/main.js",
   "scripts": {
-    "test": "standard && mocha --recursive",
-    "unit": "standard && mocha test/unit --recursive",
-    "integration": "standard && mocha test/integration --recursive",
+    "test": "mocha --recursive",
+    "unit": "mocha test/unit --recursive",
+    "integration": "mocha test/integration --recursive",
     "coverage": "istanbul cover node_modules/.bin/_mocha -- --recursive",
     "depcheck": "dependency-check app --entry main.js --unused --no-dev",
-    "lint": "standard",
+    "prettier:check": "prettier --single-quote --debug-check '**/*.js'",
+    "prettier:fix": "prettier --single-quote --write '**/*.js'",
     "start": "electron ./app/main",
     "clean:linux": "rimraf dist/linux* dist/*.deb dist/*.AppImage",
     "clean:osx": "rimraf dist/mac",
@@ -31,18 +32,6 @@
     "build:linux": "npm run prebuild && build --linux deb AppImage --x64 && npm run postbuild",
     "build": "build",
     "postbuild": "node build/target.js --clean"
-  },
-  "standard": {
-    "globals": [
-      "describe",
-      "after",
-      "it",
-      "before",
-      "beforeEach",
-      "afterEach",
-      "rm",
-      "cp"
-    ]
   },
   "pre-commit": [
     "lint",
@@ -74,8 +63,7 @@
     "linux": {
       "category": "Development"
     },
-    "win": {
-    }
+    "win": {}
   },
   "electronVersion": "1.6.11",
   "dependencies": {
@@ -95,10 +83,10 @@
     "istanbul": "^0.4",
     "mocha": "^3",
     "pre-commit": "^1",
+    "prettier": "^1.4.4",
     "rimraf": "^2",
     "shelljs": "^0.7",
-    "spectron": "^3",
-    "standard": "^8"
+    "spectron": "^3"
   },
   "config": {
     "url": "index.html",
