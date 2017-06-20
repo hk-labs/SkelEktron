@@ -1,12 +1,12 @@
 {
-  "name": "@hklabs/skelektron",
+  "name": "@hklabs/electron-boilerplate",
   "description": "Electron Application Template by HKLabs",
-  "homepage": "https://github.com/hk-labs/skelektron",
+  "homepage": "https://github.com/hk-labs/electron-boilerplate",
   "version": "0.0.1",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/hk-labs/skelektron.git"
+    "url": "https://github.com/hk-labs/electron-boilerplate.git"
   },
   "main": "app/main.js",
   "scripts": {
@@ -50,8 +50,8 @@
     "unit"
   ],
   "build": {
-    "appId": "com.bzcoding.skelektron",
-    "productName": "HKLabs Electron App",
+    "appId": "kg.hklabs.electron-app",
+    "productName": "Electron App",
     "dmg": {
       "iconSize": 120,
       "iconTextSize": 14,
