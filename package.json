@@ -1,18 +1,14 @@
 {
-  "name": "SkelEktron",
-  "description": "Unofficial Electron Template Application",
-  "version": "0.0.6",
-  "author": {
-    "name": "Vito Tardia / BZ Coding",
-    "email": "vito@bzcoding.com",
-    "url": "https://bzcoding.com/"
-  },
-  "license": "MIT",
+  "name": "@hklabs/skelektron",
+  "description": "Electron Application Template by HKLabs",
+  "homepage": "https://github.com/hk-labs/skelektron",
+  "version": "0.0.1",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/BZCoding/SkelEktron.git"
+    "url": "https://github.com/hk-labs/skelektron.git"
   },
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
     "test": "standard && mocha --recursive",
     "unit": "standard && mocha test/unit --recursive",
@@ -53,14 +49,9 @@
     "lint",
     "unit"
   ],
-  "keywords": [
-    "electron-app",
-    "electron",
-    "boilerplate"
-  ],
   "build": {
     "appId": "com.bzcoding.skelektron",
-    "productName": "SkelEktron",
+    "productName": "HKLabs Electron App",
     "dmg": {
       "iconSize": 120,
       "iconTextSize": 14,
@@ -87,6 +78,14 @@
     "win": {
     }
   },
+  "electronVersion": "1.6.11",
+  "dependencies": {
+    "devtron": "^1",
+    "electron-debug": "^1",
+    "electron-is-dev": "^0.1",
+    "electron-window-state": "^3",
+    "lodash": "^4"
+  },
   "devDependencies": {
     "async": "^2",
     "chai": "^3",
@@ -101,5 +100,16 @@
     "shelljs": "^0.7",
     "spectron": "^3",
     "standard": "^8"
-  }
+  },
+  "config": {
+    "url": "index.html",
+    "update": {
+      "url": false
+    }
+  },
+  "author": {
+    "name": "Dan Kerimdzhanov / Holy Krab Labs",
+    "email": "kerimdzhanov@gmail.com"
+  },
+  "license": "MIT"
 }
