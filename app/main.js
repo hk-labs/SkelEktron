@@ -3,7 +3,7 @@ const {app, dialog, ipcMain, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 const _ = require('lodash');
 const windowStateKeeper = require('electron-window-state');
-const pjson = require('./package.json');
+const pjson = require('../package.json');
 
 // Use system log facility, should work on Windows too
 require('./lib/log')(pjson.productName || 'Electron Boilerplate');
@@ -20,7 +20,7 @@ process.on('uncaughtException', e => {
 
 // Load build target configuration file
 try {
-  const config = require('./config.json');
+  const config = require('../config.json');
   _.merge(pjson.config, config);
 } catch (e) {
   console.warn('No config file loaded, using defaults');
