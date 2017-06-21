@@ -87,12 +87,6 @@
     "shelljs": "^0.7",
     "spectron": "^3"
   },
-  "config": {
-    "url": "index.html",
-    "update": {
-      "url": false
-    }
-  },
   "author": {
     "name": "Dan Kerimdzhanov / Holy Krab Labs",
     "email": "kerimdzhanov@gmail.com"

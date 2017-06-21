@@ -3,10 +3,10 @@ const {app, dialog, ipcMain, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 const _ = require('lodash');
 const windowStateKeeper = require('electron-window-state');
-const pjson = require('../package.json');
+const {build: {appId, productName}} = require('../package.json');
 
 // Use system log facility, should work on Windows too
-require('./lib/log')(pjson.productName || 'Electron Boilerplate');
+require('./lib/log')(appId || 'electron-boilerplate');
 
 // Manage unhandled exceptions as early as possible
 process.on('uncaughtException', e => {
@@ -18,16 +18,11 @@ process.on('uncaughtException', e => {
   app.quit();
 });
 
-// Load build target configuration file
-try {
-  const config = require('../config.json');
-  _.merge(pjson.config, config);
-} catch (e) {
-  console.warn('No config file loaded, using defaults');
-}
+// Load app configuration file
+const config = require('./config');
+global.appSettings = config;
 
-const isDev = require('electron-is-dev') || pjson.config.debug;
-global.appSettings = pjson.config;
+const isDev = require('electron-is-dev') || config.debug;
 
 if (isDev) {
   console.info('Running in development');
@@ -35,12 +30,12 @@ if (isDev) {
   console.info('Running in production');
 }
 
-console.debug(JSON.stringify(pjson.config));
+console.debug(JSON.stringify(config));
 
 // Adds debug features like hotkeys for triggering dev tools and reload
 // (disabled in production, unless the menu item is displayed)
 require('electron-debug')({
-  enabled: pjson.config.debug || isDev || false
+  enabled: (isDev || false)
 });
 
 // Prevent window being garbage collected
@@ -49,7 +44,7 @@ let mainWindow;
 // Other windows we may need
 let infoWindow = null;
 
-app.setName(pjson.productName || 'SkelEktron');
+app.setName(productName || 'Electron Boilerplate');
 
 function initialize() {
   const shouldQuit = makeSingleInstance();
@@ -66,10 +61,12 @@ function initialize() {
   }
 
   function createMainWindow() {
+    const {defaultWidth, defaultHeight} = config.mainWindow;
+
     // Load the previous window state with fallback to defaults
-    let mainWindowState = windowStateKeeper({
-      defaultWidth: 1024,
-      defaultHeight: 768
+    const mainWindowState = windowStateKeeper({
+      defaultWidth,
+      defaultHeight
     });
 
     const win = new BrowserWindow({
@@ -81,7 +78,7 @@ function initialize() {
       icon: path.join(__dirname, '/app/assets/img/icon.png'),
       show: false, // Hide your application until your page has loaded
       webPreferences: {
-        nodeIntegration: pjson.config.nodeIntegration || true, // Disabling node integration allows to use libraries such as jQuery/React, etc
+        nodeIntegration: config.nodeIntegration || true, // Disabling node integration allows to use libraries such as jQuery/React, etc
         preload: path.resolve(path.join(__dirname, 'preload.js'))
       }
     });
@@ -92,7 +89,7 @@ function initialize() {
     mainWindowState.manage(win);
 
     // Remove file:// if you need to load http URLs
-    win.loadURL(`file://${__dirname}/${pjson.config.url}`, {});
+    win.loadURL(config.mainWindow.url, {});
 
     win.on('closed', onClosed);
 
@@ -160,7 +157,7 @@ function initialize() {
     // Manage automatic updates
     try {
       require('./lib/auto-update/update')({
-        url: pjson.config.update ? pjson.config.update.url || false : false,
+        url: config.update.url || false,
         version: app.getVersion()
       });
 
