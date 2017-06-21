@@ -1,15 +1,14 @@
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const webFrame = electron.webFrame;
+//noinspection NpmUsedModulesInstalled
+const {ipcRenderer, webFrame, remote} = require('electron');
+
+const {Menu} = remote;
 const maximumZoomLevel = 3;
 
-const { Menu } = electron.remote;
-
-var currentZoomLevel, zoomMenuItems;
+let currentZoomLevel, zoomMenuItems;
 
 function getZoomUI() {
   const menu = Menu.getApplicationMenu();
-  var menuItems = [];
+  const menuItems = [];
   menu.items.forEach(item => {
     if (item.id === 'view') {
       item.submenu.items.forEach(item => {
@@ -47,15 +46,18 @@ window.addEventListener('load', () => {
   zoomMenuItems = getZoomUI();
   enableZoomUI();
 });
-ipc.on('zoom-actual', event => {
+
+ipcRenderer.on('zoom-actual', event => {
   currentZoomLevel = webFrame.setZoomLevel(0);
 });
-ipc.on('zoom-in', event => {
+
+ipcRenderer.on('zoom-in', event => {
   if (currentZoomLevel < maximumZoomLevel) {
     currentZoomLevel = webFrame.setZoomLevel(currentZoomLevel + 1);
   }
 });
-ipc.on('zoom-out', event => {
+
+ipcRenderer.on('zoom-out', event => {
   if (currentZoomLevel > 0) {
     currentZoomLevel = webFrame.setZoomLevel(currentZoomLevel - 1);
   }

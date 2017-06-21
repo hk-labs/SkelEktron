@@ -1,8 +1,6 @@
-'use strict';
-
+//noinspection NpmUsedModulesInstalled
+const {app, BrowserWindow, ipcMain} = require('electron');
 const isDev = require('electron-is-dev') || global.appSettings.debug;
-const { app, BrowserWindow } = require('electron');
-const ipc = require('electron').ipcMain;
 
 function sendAction(action) {
   const win = BrowserWindow.getFocusedWindow();
@@ -41,7 +39,7 @@ const viewSubmenu = [
   {
     label: 'Back',
     accelerator: 'CmdOrCtrl+B',
-    click: function(item, focusedWindow) {
+    click(item, focusedWindow) {
       if (focusedWindow) {
         focusedWindow.webContents.goBack();
       }
@@ -50,7 +48,7 @@ const viewSubmenu = [
   {
     label: 'Reload',
     accelerator: 'CmdOrCtrl+R',
-    click: function(item, focusedWindow) {
+    click(item, focusedWindow) {
       if (focusedWindow) {
         focusedWindow.reload();
       }
@@ -94,8 +92,8 @@ const viewSubmenu = [
 const helpSubmenu = [
   {
     label: 'Info',
-    click: () => {
-      ipc.emit('open-info-window');
+    click() {
+      ipcMain.emit('open-info-window');
     }
   }
 ];
@@ -200,10 +198,10 @@ if (isDev) {
   });
   viewSubmenu.push({
     label: 'Toggle Developer Tools',
-    accelerator: process.platform === 'darwin'
+    accelerator: (process.platform === 'darwin')
       ? 'Alt+Command+I'
       : 'Ctrl+Shift+I',
-    click: (item, focusedWindow) => {
+    click(item, focusedWindow) {
       if (focusedWindow) {
         focusedWindow.webContents.toggleDevTools();
       }
@@ -211,4 +209,4 @@ if (isDev) {
   });
 }
 
-module.exports = process.platform === 'darwin' ? darwinTemplate : otherTemplate;
+module.exports = (process.platform === 'darwin') ? darwinTemplate : otherTemplate;

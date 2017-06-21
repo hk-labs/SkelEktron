@@ -1,15 +1,15 @@
-'use strict';
-
-require('shelljs/global');
+const {cp, rm} = require('shelljs');
 const path = require('path');
 
 const target = process.env.BUILD_TARGET || 'release';
-const clean = process.argv[2] === '--clean';
+const clean = (process.argv[2] === '--clean');
 
 const targetConfFile = path.resolve(
   path.join(__dirname, `targets/${target}.json`)
 );
-const targetDestFile = path.resolve(path.join(__dirname, '../app/config.json'));
+const targetDestFile = path.resolve(
+  path.join(__dirname, '../app/target-config.json')
+);
 
 if (clean) {
   console.log('Cleaning Target: %s', target);
@@ -17,5 +17,4 @@ if (clean) {
 }
 
 console.log('Preparing Target: %s', target);
-
 process.exit(cp(targetConfFile, targetDestFile).code);

@@ -1,18 +1,15 @@
-'use strict';
-
+//noinspection NpmUsedModulesInstalled
+const {app} = require('electron');
+const {spawn} = require('child_process');
 const path = require('path');
-const cp = require('child_process');
-const app = require('electron').app;
 
 /**
  * Squirrel events management (windows)
  */
 function executeSquirrelCommand(args, done) {
   const updateDotExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
-  const child = cp.spawn(updateDotExe, args, { detached: true });
-  child.on('close', (code) => {
-    done();
-  });
+  const child = spawn(updateDotExe, args, { detached: true });
+  child.on('close', () => done());
 }
 
 function install(done) {

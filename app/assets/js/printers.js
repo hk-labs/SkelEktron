@@ -1,3 +1,4 @@
+//noinspection NpmUsedModulesInstalled
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 
@@ -76,7 +77,7 @@ ipc.on('printer-list', (event, printers) => {
   }
 
   const printPDFTestButtons = printerList.getElementsByClassName('printPDFTest');
-  for (i = 0; i < printPDFTestButtons.length; i++) {
+  for (let i = 0; i < printPDFTestButtons.length; i++) {
     printPDFTestButtons[i].addEventListener('click', event => {
       const device = event.target.getAttribute('data-printer') || null;
       if (device) {

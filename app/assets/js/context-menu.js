@@ -1,5 +1,5 @@
-const electron = require('electron');
-const { Menu, MenuItem } = electron.remote;
+//noinspection NpmUsedModulesInstalled
+const {Menu, MenuItem, getCurrentWindow} = require('electron').remote;
 
 const menu = new Menu();
 
@@ -42,6 +42,6 @@ window.addEventListener('contextmenu', e => {
   // e.target is the underlying HTML element,
   // you can enable/disable non-OS items based on this before displaying
   // (i.e) example of menu item enabled for links only
-  linkMenuItem.enabled = e.target.localName === 'a';
-  menu.popup(electron.remote.getCurrentWindow());
+  linkMenuItem.enabled = (e.target.localName === 'a');
+  menu.popup(getCurrentWindow());
 }, false);

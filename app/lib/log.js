@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Redirects default log functions
  *
@@ -27,6 +25,7 @@ module.exports = logFileName => {
         (logFileName || 'Electron').replace(' ', '') + '.log'
       );
       break;
+
     case 'win32':
       logFile = path.join(
         os.homedir(),
@@ -35,6 +34,7 @@ module.exports = logFileName => {
         (logFileName || 'Electron').replace(' ', '') + '.log'
       );
       break;
+
     case 'linux':
       logFile = path.join(
         os.homedir(),
@@ -55,29 +55,29 @@ module.exports = logFileName => {
   const logger = new console.Console(output, errorOutput);
 
   // Override default log utilities
-  console.log = function() {
+  console.log = function () {
     arguments[0] = new Date().toISOString() + ' - ' + arguments[0];
     logger.log.apply(null, arguments);
   };
 
-  console.debug = function() {
+  console.debug = function () {
     arguments[0] = new Date().toISOString() + ' - <Debug> ' + arguments[0];
     if (isDev || (global.appSettings && global.appSettings.debug)) {
       logger.log.apply(null, arguments);
     }
   };
 
-  console.info = function() {
+  console.info = function () {
     arguments[0] = new Date().toISOString() + ' - <Info> ' + arguments[0];
     logger.log.apply(null, arguments);
   };
 
-  console.warn = function() {
+  console.warn = function () {
     arguments[0] = new Date().toISOString() + ' - <Warning> ' + arguments[0];
     logger.log.apply(null, arguments);
   };
 
-  console.error = function() {
+  console.error = function () {
     arguments[0] = new Date().toISOString() + ' - <Error> ' + arguments[0];
     logger.log.apply(null, arguments);
   };

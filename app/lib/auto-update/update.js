@@ -1,9 +1,8 @@
-'use strict';
-
+//noinspection NpmUsedModulesInstalled
+const {autoUpdater, ipcMain} = require('electron');
 const os = require('os');
-const platform = os.platform() + '_' + os.arch();
 
-const { autoUpdater } = require('electron');
+const platform = os.platform() + '_' + os.arch();
 
 module.exports = function update(options) {
   if (!options.url) {
@@ -48,6 +47,6 @@ module.exports = function update(options) {
 
   autoUpdater.on('update-downloaded', () => {
     console.info('Update package downloaded');
-    require('electron').ipcMain.emit('update-downloaded', autoUpdater);
+    ipcMain.emit('update-downloaded', autoUpdater);
   });
 };

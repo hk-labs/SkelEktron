@@ -1,14 +1,9 @@
-'use strict';
-
-const electron = require('electron');
-const app = electron.app;
-const Menu = require('electron').Menu;
-const dialog = require('electron').dialog;
-const ipc = require('electron').ipcMain;
+//noinspection NpmUsedModulesInstalled
+const {app, dialog, ipcMain, BrowserWindow, Menu} = require('electron');
 const path = require('path');
-const pjson = require('./package.json');
 const _ = require('lodash');
 const windowStateKeeper = require('electron-window-state');
+const pjson = require('./package.json');
 
 // Use system log facility, should work on Windows too
 require('./lib/log')(pjson.productName || 'Electron Boilerplate');
@@ -77,7 +72,7 @@ function initialize() {
       defaultHeight: 768
     });
 
-    const win = new electron.BrowserWindow({
+    const win = new BrowserWindow({
       width: mainWindowState.width,
       height: mainWindowState.height,
       x: mainWindowState.x,
@@ -108,7 +103,7 @@ function initialize() {
       win.focus();
     });
 
-    win.on('unresponsive', function() {
+    win.on('unresponsive', function () {
       // In the real world you should display a box and do something
       console.warn('The windows is not responding');
     });
@@ -168,10 +163,11 @@ function initialize() {
         url: pjson.config.update ? pjson.config.update.url || false : false,
         version: app.getVersion()
       });
-      ipc.on('update-downloaded', autoUpdater => {
+
+      ipcMain.on('update-downloaded', autoUpdater => {
         // Elegant solution: display unobtrusive notification messages
         mainWindow.webContents.send('update-downloaded');
-        ipc.on('update-and-restart', () => {
+        ipcMain.on('update-and-restart', () => {
           autoUpdater.quitAndInstall();
         });
 
@@ -189,7 +185,8 @@ function initialize() {
         //   autoUpdater.quitAndInstall()
         // }
       });
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e.message);
       dialog.showErrorBox('Update Error', e.message);
     }
@@ -197,11 +194,12 @@ function initialize() {
 
   app.on('will-quit', () => {});
 
-  ipc.on('open-info-window', () => {
+  ipcMain.on('open-info-window', () => {
     if (infoWindow) {
       return;
     }
-    infoWindow = new electron.BrowserWindow({
+
+    infoWindow = new BrowserWindow({
       width: 600,
       height: 600,
       resizable: false

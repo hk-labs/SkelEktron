@@ -1,17 +1,15 @@
-'use strict';
-
+//noinspection NpmUsedModulesInstalled
+const {ipcMain} = require('electron');
 const np = require('printer');
 const fs = require('fs');
 const path = require('path');
 
-const ipc = require('electron').ipcMain;
-
 // Manage renderer requests
-ipc.on('list-printers', event => {
+ipcMain.on('list-printers', event => {
   event.sender.send('printer-list', listPrinters());
 });
 
-ipc.on('print-txt-test', (event, device) => {
+ipcMain.on('print-txt-test', (event, device) => {
   printTXTTest(device, (err, jobID) => {
     if (err) {
       event.sender.send('printing-error', err);
@@ -21,7 +19,7 @@ ipc.on('print-txt-test', (event, device) => {
   });
 });
 
-ipc.on('print-pdf-test', (event, device) => {
+ipcMain.on('print-pdf-test', (event, device) => {
   printPDFTest(device, (err, jobID) => {
     if (err) {
       event.sender.send('printing-error', err);
@@ -78,6 +76,7 @@ function printPDFTest(device, callback) {
   const filename = path.resolve(
     path.join(__dirname, '../assets/printer/test.pdf')
   );
+
   console.info('Printing PDF test page', device);
   console.debug('Platform:', process.platform);
   console.debug('Trying to print file: ' + filename);
@@ -85,7 +84,8 @@ function printPDFTest(device, callback) {
   if (process.platform === 'win32') {
     return callback('Sorry, printing not supported on Windows :(');
   }
-  fs.readFile(filename, function(err, data) {
+
+  fs.readFile(filename, (err, data) => {
     if (err) {
       console.error('Err:' + err);
       return callback(err);
@@ -97,11 +97,11 @@ function printPDFTest(device, callback) {
       printer: device.name,
       data: data,
       type: 'PDF',
-      success: function(jobID) {
+      success(jobID) {
         console.info('Printed with id ' + jobID);
         return callback(null, jobID);
       },
-      error: function(err) {
+      error(err) {
         console.error('Error on printing: ' + err);
         return callback(err);
       }
@@ -110,7 +110,7 @@ function printPDFTest(device, callback) {
 }
 
 module.exports = {
-  listPrinters: listPrinters,
-  printTXTTest: printTXTTest,
-  printPDFTest: printPDFTest
+  listPrinters,
+  printTXTTest,
+  printPDFTest
 };
