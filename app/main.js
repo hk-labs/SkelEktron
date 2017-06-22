@@ -50,6 +50,25 @@ function initialize() {
   const shouldQuit = makeSingleInstance();
   if (shouldQuit) return app.quit();
 
+  if (isDev) {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    const devtoolsInstaller = require('electron-devtools-installer');
+    const installExtension = devtoolsInstaller.default;
+    const {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} = devtoolsInstaller;
+
+    Promise
+      .all([
+        installExtension(REACT_DEVELOPER_TOOLS),
+        installExtension(REDUX_DEVTOOLS)
+      ])
+      .then(() => {
+        console.info('Development extensions are loaded.');
+      })
+      .catch((err) => {
+        console.error('Error while loading development extensions:', err);
+      });
+  }
+
   // Use printer utility lib (requires printer module, see README)
   // require('./lib/printer');
 
