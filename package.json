@@ -66,7 +66,6 @@
   },
   "electronVersion": "1.6.11",
   "dependencies": {
-    "devtron": "^1",
     "electron-debug": "^1",
     "electron-is-dev": "^0.1",
     "electron-window-state": "^3",
@@ -77,6 +76,7 @@
     "chai": "^3",
     "chai-as-promised": "^6",
     "dependency-check": "^2",
+    "devtron": "^1",
     "electron-builder": "^7",
     "electron-prebuilt": "^1",
     "istanbul": "^0.4",
