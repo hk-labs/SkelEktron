@@ -35,8 +35,9 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
+# dotenv local environment variables
+.env.local
+.env.*.local
 
 # Releases directory
 dist/

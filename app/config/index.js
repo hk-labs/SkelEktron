@@ -3,7 +3,7 @@
  */
 
 const path = require('path');
-const {getEnvironmentVariable} = require('./utils');
+const {getEnvironmentVariable} = require('./env');
 
 const appRoot = path.dirname(__dirname);
 

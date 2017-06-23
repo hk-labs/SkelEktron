@@ -66,6 +66,7 @@
   },
   "electronVersion": "1.6.11",
   "dependencies": {
+    "dotenv": "^4.0.0",
     "electron-debug": "^1",
     "electron-is-dev": "^0.1",
     "electron-window-state": "^3",
