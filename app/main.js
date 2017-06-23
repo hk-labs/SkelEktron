@@ -2,7 +2,7 @@
 const {app, dialog, ipcMain, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 const _ = require('lodash');
-const windowStateKeeper = require('electron-window-state');
+const {createWindow} = require('./lib/window');
 const {build: {appId, productName}} = require('../package.json');
 
 // Use system log facility, should work on Windows too
@@ -22,24 +22,24 @@ process.on('uncaughtException', e => {
 const config = require('./config');
 global.appSettings = config;
 
-const isDev = require('electron-is-dev') || config.debug;
+const isDev = require('electron-is-dev');
 
-if (isDev) {
-  console.info('Running in development');
+if (isDev || config.debug) {
+  console.debug('Running in development');
 } else {
-  console.info('Running in production');
+  console.debug('Running in production');
 }
 
-console.debug(JSON.stringify(config));
+console.debug('config:', config);
 
 // Adds debug features like hotkeys for triggering dev tools and reload
 // (disabled in production, unless the menu item is displayed)
 require('electron-debug')({
-  enabled: (isDev || false)
+  enabled: isDev || config.debug
 });
 
 // Prevent window being garbage collected
-let mainWindow;
+let mainWindow = null;
 
 // Other windows we may need
 let infoWindow = null;
@@ -53,139 +53,17 @@ function initialize() {
   // Use printer utility lib (requires printer module, see README)
   // require('./lib/printer');
 
-  function onClosed() {
-    // Dereference used windows
-    // for multiple windows store them in an array
-    mainWindow = null;
-    infoWindow = null;
-  }
+  app.on('activate', activate);
 
-  function createMainWindow() {
-    const {defaultWidth, defaultHeight} = config.mainWindow;
-
-    // Load the previous window state with fallback to defaults
-    const mainWindowState = windowStateKeeper({
-      defaultWidth,
-      defaultHeight
-    });
-
-    const win = new BrowserWindow({
-      width: mainWindowState.width,
-      height: mainWindowState.height,
-      x: mainWindowState.x,
-      y: mainWindowState.y,
-      title: app.getName(),
-      icon: path.join(__dirname, '/app/assets/img/icon.png'),
-      show: false, // Hide your application until your page has loaded
-      webPreferences: {
-        nodeIntegration: config.nodeIntegration || true, // Disabling node integration allows to use libraries such as jQuery/React, etc
-        preload: path.resolve(path.join(__dirname, 'preload.js'))
-      }
-    });
-
-    // Let us register listeners on the window, so we can update the state
-    // automatically (the listeners will be removed when the window is closed)
-    // and restore the maximized or full screen state
-    mainWindowState.manage(win);
-
-    // Remove file:// if you need to load http URLs
-    win.loadURL(config.mainWindow.url, {});
-
-    win.on('closed', onClosed);
-
-    // Then, when everything is loaded, show the window and focus it so it pops up for the user
-    // Yon can also use: win.webContents.on('did-finish-load')
-    win.on('ready-to-show', () => {
-      win.show();
-      win.focus();
-    });
-
-    win.on('unresponsive', function () {
-      // In the real world you should display a box and do something
-      console.warn('The windows is not responding');
-    });
-
-    win.webContents.on(
-      'did-fail-load',
-      (error, errorCode, errorDescription) => {
-        let errorMessage;
-
-        if (errorCode === -105) {
-          errorMessage =
-            errorDescription ||
-            '[Connection Error] The host name could not be resolved, check your network connection';
-          console.log(errorMessage);
-        } else {
-          errorMessage = errorDescription || 'Unknown error';
-        }
-
-        error.sender.loadURL(`file://${__dirname}/error.html`);
-        win.webContents.on('did-finish-load', () => {
-          win.webContents.send('app-error', errorMessage);
-        });
-      }
-    );
-
-    win.webContents.on('crashed', () => {
-      // In the real world you should display a box and do something
-      console.error('The browser window has just crashed');
-    });
-
-    win.webContents.on('did-finish-load', () => {
-      win.webContents.send('hello');
-    });
-
-    return win;
-  }
+  app.on('ready', () => {
+    Menu.setApplicationMenu(createMenu());
+    activate();
+    startAutoUpdate();
+  });
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
       app.quit();
-    }
-  });
-
-  app.on('activate', () => {
-    if (!mainWindow) {
-      mainWindow = createMainWindow();
-    }
-  });
-
-  app.on('ready', () => {
-    Menu.setApplicationMenu(createMenu());
-    mainWindow = createMainWindow();
-
-    // Manage automatic updates
-    try {
-      require('./lib/auto-update/update')({
-        url: config.update.url || false,
-        version: app.getVersion()
-      });
-
-      ipcMain.on('update-downloaded', autoUpdater => {
-        // Elegant solution: display unobtrusive notification messages
-        mainWindow.webContents.send('update-downloaded');
-        ipcMain.on('update-and-restart', () => {
-          autoUpdater.quitAndInstall();
-        });
-
-        // Basic solution: display a message box to the user
-        // var updateNow = dialog.showMessageBox(mainWindow, {
-        //   type: 'question',
-        //   buttons: ['Yes', 'No'],
-        //   defaultId: 0,
-        //   cancelId: 1,
-        //   title: 'Update available',
-        //   message: 'There is an update available, do you want to restart and install it now?'
-        // })
-        //
-        // if (updateNow === 0) {
-        //   autoUpdater.quitAndInstall()
-        // }
-      });
-    }
-    catch (e) {
-      console.error(e.message);
-      dialog.showErrorBox('Update Error', e.message);
     }
   });
 
@@ -197,8 +75,8 @@ function initialize() {
     }
 
     infoWindow = new BrowserWindow({
-      width: 600,
-      height: 600,
+      width: 300,
+      height: 340,
       resizable: false
     });
     infoWindow.loadURL(`file://${__dirname}/info.html`);
@@ -227,6 +105,59 @@ function makeSingleInstance() {
 
 function createMenu() {
   return Menu.buildFromTemplate(require('./lib/menu'));
+}
+
+/**
+ * Activate the main window.
+ */
+function activate() {
+  if (mainWindow) {
+    mainWindow.focus();
+    return;
+  }
+
+  mainWindow = createWindow(config.mainWindow)
+    .on('closed', () => {
+      mainWindow = null;
+    });
+}
+
+/**
+ * Manage automatic updates.
+ */
+function startAutoUpdate() {
+  try {
+    require('./lib/auto-update/update')({
+      url: config.update.url || false,
+      version: app.getVersion()
+    });
+
+    ipcMain.on('update-downloaded', autoUpdater => {
+      // Elegant solution: display unobtrusive notification messages
+      mainWindow && mainWindow.webContents.send('update-downloaded');
+      ipcMain.on('update-and-restart', () => {
+        autoUpdater.quitAndInstall();
+      });
+
+      // Basic solution: display a message box to the user
+      // var updateNow = dialog.showMessageBox(mainWindow, {
+      //   type: 'question',
+      //   buttons: ['Yes', 'No'],
+      //   defaultId: 0,
+      //   cancelId: 1,
+      //   title: 'Update available',
+      //   message: 'There is an update available, do you want to restart and install it now?'
+      // })
+      //
+      // if (updateNow === 0) {
+      //   autoUpdater.quitAndInstall()
+      // }
+    });
+  }
+  catch (e) {
+    console.error(e.message);
+    dialog.showErrorBox('Update Error', e.message);
+  }
 }
 
 // Manage Squirrel startup event (Windows)

@@ -1,6 +1,6 @@
 //noinspection NpmUsedModulesInstalled
 const {app, BrowserWindow, ipcMain} = require('electron');
-const isDev = require('electron-is-dev') || global.appSettings.debug;
+const isDev = require('electron-is-dev');
 
 function sendAction(action) {
   const win = BrowserWindow.getFocusedWindow();
@@ -192,10 +192,8 @@ const otherTemplate = [
 ];
 
 // Show Dev Tools menu if running in development
-if (isDev) {
-  viewSubmenu.push({
-    type: 'separator'
-  });
+if (isDev || global.appSettings.debug) {
+  viewSubmenu.push({ type: 'separator' });
   viewSubmenu.push({
     label: 'Toggle Developer Tools',
     accelerator: (process.platform === 'darwin')

@@ -10,11 +10,11 @@ const appRoot = path.dirname(__dirname);
 module.exports = {
   appRoot, // app root dir
 
-  nodeIntegration: false,
   debug: getEnvironmentVariable('DEBUG', 'bool', false),
 
   // main window settings
   mainWindow: {
+    title: 'Electron App | HKLabs',
     fullscreen: getEnvironmentVariable('FULLSCREEN', 'bool', undefined),
     defaultWidth: getEnvironmentVariable('MAIN_WINDOW_WIDTH', 'int', 1024),
     defaultHeight: getEnvironmentVariable('MAIN_WINDOW_HEIGHT', 'int', 768),
