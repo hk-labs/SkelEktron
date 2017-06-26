@@ -10,13 +10,17 @@
   },
   "main": "app/main.js",
   "scripts": {
-    "test": "mocha --recursive",
-    "unit": "mocha test/unit --recursive",
-    "integration": "mocha test/integration --recursive",
-    "coverage": "istanbul cover node_modules/.bin/_mocha -- --recursive",
     "depcheck": "dependency-check app --entry main.js --unused --no-dev",
     "prettier:check": "prettier --single-quote --print-width 100 --debug-check '**/*.js'",
     "prettier:fix": "prettier --single-quote --print-width 100 --write '**/*.js'",
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "npm run test:unit:main && npm run test:unit:renderer",
+    "test:unit:main": "electron-mocha test/unit/main/*.spec.js test/unit/main/**/*.spec.js",
+    "test:unit:renderer": "electron-mocha --renderer test/unit/renderer/*.spec.js test/unit/renderer/**/*.spec.js",
+    "test:integration": "npm run test:integration:main && npm run test:integration:renderer",
+    "test:integration:main": "electron-mocha test/integration/main/*.spec.js test/integration/main/**/*.spec.js",
+    "test:integration:renderer": "electron-mocha --renderer test/integration/renderer/*.spec.js test/integration/renderer/**/*.spec.js",
+    "test:e2e": "mocha test/e2e/*.feature.js test/e2e/**/*.feature.js",
     "start": "electron ./app/main",
     "clean:linux": "rimraf dist/linux* dist/*.deb dist/*.AppImage",
     "clean:osx": "rimraf dist/mac",
@@ -34,7 +38,8 @@
     "postbuild": "node build/target.js --clean"
   },
   "pre-commit": [
-    "unit"
+    "test:unit",
+    "test:integration"
   ],
   "build": {
     "appId": "kg.hklabs.electron-app",
@@ -79,6 +84,7 @@
     "dependency-check": "^2",
     "devtron": "^1",
     "electron-builder": "^7",
+    "electron-mocha": "^4.0.0",
     "electron-prebuilt": "^1",
     "istanbul": "^0.4",
     "mocha": "^3",
@@ -86,6 +92,8 @@
     "prettier": "^1.4.4",
     "rimraf": "^2",
     "shelljs": "^0.7",
+    "sinon": "^2.3.5",
+    "sinon-chai": "^2.11.0",
     "spectron": "^3"
   },
   "author": {
