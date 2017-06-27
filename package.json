@@ -10,9 +10,9 @@
   },
   "main": "app/main.js",
   "scripts": {
-    "depcheck": "dependency-check app --entry main.js --unused --no-dev",
     "prettier:check": "prettier --single-quote --print-width 100 --debug-check '**/*.js'",
     "prettier:fix": "prettier --single-quote --print-width 100 --write '**/*.js'",
+    "depcheck": "dependency-check ./ --entry app/main.js --unused --no-dev",
     "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "test:unit": "npm run test:unit:main && npm run test:unit:renderer",
     "test:unit:main": "electron-mocha test/unit/main/*.spec.js test/unit/main/**/*.spec.js",
