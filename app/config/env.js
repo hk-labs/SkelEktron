@@ -3,6 +3,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const isDev = require('electron-is-dev');
 
+/* istanbul ignore if */
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = isDev ? 'development' : 'production';
 }
