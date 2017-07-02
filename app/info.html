@@ -5,9 +5,11 @@
     <title>Application Info</title>
     <link rel="stylesheet" href="assets/css/app.css">
     <script>
-      const pjson = require('./package.json')
-      const electron = require('electron')
-      const ipc = electron.ipcRenderer
+      //noinspection NpmUsedModulesInstalled
+      const electron = require('electron');
+      const pjson = require('../package.json');
+      const config = require('./config');
+      const ipc = electron.ipcRenderer;
     </script>
   </head>
   <body>
@@ -18,37 +20,67 @@
       </header>
       <section class="main">
         <ul>
-          <li><strong>Platform</strong>: <script>document.write(process.platform)</script></li>
-          <li><strong>Architecture</strong>: <script>document.write(process.arch)</script></li>
-          <li><strong>OS Release</strong>: <script>document.write(require('os').release())</script></li>
-          <li><strong>Main URL</strong>: <script>document.write(pjson.config.url || 'N.A.')</script></li>
-          <li><strong>Updates URL</strong>: <script>document.write((pjson.config.update && pjson.config.update.url) ? pjson.config.update.url : 'N.A.')</script></li>
-          <li><strong>Node</strong>: <script>document.write(process.versions.node)</script></li>
-          <li><strong>Chrome</strong>: <script>document.write(process.versions.chrome)</script></li>
-          <li><strong>Electron Runtime</strong>: <script>document.write(process.versions.electron)</script></li>
-          <li><strong>Process ID</strong>: <script>document.write(process.pid)</script></li>
-          <li><strong>Memory Usage</strong>: <script>document.write((Math.floor(process.memoryUsage().rss / (1024 * 1024))) + ' MB')</script></li>
-          <li><strong>Debug Mode</strong>: <script>document.write(pjson.config.debug || false)</script></li>
+          <li>
+            <strong>Platform</strong>:
+            <script>document.write(process.platform)</script>
+          </li>
+          <li>
+            <strong>Architecture</strong>:
+            <script>document.write(process.arch)</script></li>
+          <li>
+            <strong>OS Release</strong>:
+            <script>document.write(require('os').release())</script>
+          </li>
+          <li>
+            <strong>Main URL</strong>:
+            <script>document.write(config.mainWindow.url || 'N.A.')</script>
+          </li>
+          <li>
+            <strong>Updates URL</strong>:
+            <script>document.write((config.update && config.update.url) ? config.update.url : 'N.A.')</script>
+          </li>
+          <li>
+            <strong>Node</strong>:
+            <script>document.write(process.versions.node)</script>
+          </li>
+          <li>
+            <strong>Chrome</strong>:
+            <script>document.write(process.versions.chrome)</script>
+          </li>
+          <li>
+            <strong>Electron Runtime</strong>:
+            <script>document.write(process.versions.electron)</script>
+          </li>
+          <li>
+            <strong>Memory Usage</strong>:
+            <script>document.write((Math.floor(process.memoryUsage().rss / (1024 * 1024))) + ' MB')</script>
+          </li>
+          <li>
+            <strong>Debug Mode</strong>:
+            <script>document.write(config.debug)</script>
+          </li>
         </ul>
       </section>
+
       <section class="printer-list">
         <h2>Available Printers</h2>
         <div id="printers">
           <p>Searching for printers...</p>
         </div>
       </section>
+
       <footer>
         <p>
-          <small>(cc) 2016 SkelEktron</small>
+          <small>© 2017 HKLabs</small>
         </p>
       </footer>
       <p><a class="ui-text" id="close" href="javascript:window.close()">Close</a></p>
     </div>
   </body>
   <script>
-    // You can also require other files to run in this process
-    require('./assets/js/ex-links.js')
+    require('./assets/js/ex-links');
+
     // Uncomment below to enable printer management
-    // require('./assets/js/printers.js')
+    //require('./assets/js/printers.js');
   </script>
 </html>
