@@ -5,18 +5,11 @@ const _ = require('lodash');
 const {createWindow} = require('./lib/window');
 const {build: {appId, productName}} = require('../package.json');
 
+// Catch unhandled errors and promise rejections
+require('./lib/error-handler');
+
 // Use system log facility, should work on Windows too
 require('./lib/log')(appId || 'electron-boilerplate');
-
-// Manage unhandled exceptions as early as possible
-process.on('uncaughtException', e => {
-  console.error(`Caught unhandled exception: ${e}`);
-  dialog.showErrorBox(
-    'Caught unhandled exception',
-    e.message || 'Unknown error message'
-  );
-  app.quit();
-});
 
 // Load app configuration file
 const config = require('./config');

@@ -83,6 +83,7 @@
     "dotenv": "^4.0.0",
     "electron-debug": "^1",
     "electron-is-dev": "^0.1",
+    "electron-unhandled": "^0.2.0",
     "electron-window-state": "^3",
     "lodash": "^4"
   },
